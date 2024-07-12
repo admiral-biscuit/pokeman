@@ -1,4 +1,4 @@
-package types
+package de.admiralbiscuit.akquinet.pokeman.types
 
 enum class PokemanType(val string: String) {
   FIRE("Fire"),

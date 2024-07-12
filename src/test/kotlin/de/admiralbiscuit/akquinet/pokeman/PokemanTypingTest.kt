@@ -1,11 +1,13 @@
-import errors.InvalidPokemanTyping
+package de.admiralbiscuit.akquinet.pokeman
+
+import de.admiralbiscuit.akquinet.pokeman.errors.InvalidPokemanTyping
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import types.DualTyping
-import types.PokemanType
-import types.TripleTyping
+import de.admiralbiscuit.akquinet.pokeman.types.DualTyping
+import de.admiralbiscuit.akquinet.pokeman.types.PokemanType
+import de.admiralbiscuit.akquinet.pokeman.types.TripleTyping
 
 class PokemanTypingTest :
   DescribeSpec({

@@ -1,8 +1,10 @@
-import errors.NotANaturalNumberError
+package de.admiralbiscuit.akquinet.pokeman
+
+import de.admiralbiscuit.akquinet.pokeman.errors.NotANaturalNumberError
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.core.spec.style.DescribeSpec
-import types.NaturalNumber
+import de.admiralbiscuit.akquinet.pokeman.types.NaturalNumber
 
 class NaturalNumberTest :
   DescribeSpec({

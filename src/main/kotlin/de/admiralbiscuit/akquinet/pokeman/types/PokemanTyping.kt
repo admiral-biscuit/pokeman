@@ -4,12 +4,12 @@
 
 @file:Suppress("DataClassPrivateConstructor")
 
-package types
+package de.admiralbiscuit.akquinet.pokeman.types
 
 import arrow.core.Either
 import arrow.core.left
 import arrow.core.right
-import errors.InvalidPokemanTyping
+import de.admiralbiscuit.akquinet.pokeman.errors.InvalidPokemanTyping
 
 sealed interface PokemanTyping {
   fun joinToString(): String =

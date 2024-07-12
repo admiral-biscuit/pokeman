@@ -1,4 +1,4 @@
-package types
+package de.admiralbiscuit.akquinet.pokeman.types
 
 @JvmInline
 value class PokemanName private constructor(val value: String) {

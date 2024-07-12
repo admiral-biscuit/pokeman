@@ -1,4 +1,4 @@
-package errors
+package de.admiralbiscuit.akquinet.pokeman.errors
 
 sealed interface PokemanNameError {
   data object BlankName

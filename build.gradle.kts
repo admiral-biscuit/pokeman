@@ -1,6 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-plugins { kotlin("jvm") version "1.9.10" }
+plugins { kotlin("jvm") version "1.9.22" }
 
 group = "de.admiralbiscuit.akquinet.pokeman"
 
@@ -16,4 +14,4 @@ dependencies {
 
 tasks.test { useJUnitPlatform() }
 
-tasks.withType<KotlinCompile> { kotlinOptions.jvmTarget = "1.8" }
+kotlin { jvmToolchain { languageVersion.set(JavaLanguageVersion.of("21")) } }
