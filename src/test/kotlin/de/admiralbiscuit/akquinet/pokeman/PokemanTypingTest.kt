@@ -1,16 +1,31 @@
 package de.admiralbiscuit.akquinet.pokeman
 
 import de.admiralbiscuit.akquinet.pokeman.errors.InvalidPokemanTyping
+import de.admiralbiscuit.akquinet.pokeman.types.DualTyping
+import de.admiralbiscuit.akquinet.pokeman.types.PokemanType
+import de.admiralbiscuit.akquinet.pokeman.types.SingleTyping
+import de.admiralbiscuit.akquinet.pokeman.types.TripleTyping
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import de.admiralbiscuit.akquinet.pokeman.types.DualTyping
-import de.admiralbiscuit.akquinet.pokeman.types.PokemanType
-import de.admiralbiscuit.akquinet.pokeman.types.TripleTyping
 
 class PokemanTypingTest :
   DescribeSpec({
+    describe("joinToString") {
+      it("wörks") {
+        val typing1 = SingleTyping(PokemanType.FIRE)
+        typing1.joinToString() shouldBe "Fire"
+
+        val typing2 = DualTyping.of(PokemanType.FIRE, PokemanType.FLYING).shouldBeRight()
+        typing2.joinToString() shouldBe "Fire / Flying"
+
+        val typing3 =
+          TripleTyping.of(PokemanType.DRAGON, PokemanType.FIRE, PokemanType.FLYING).shouldBeRight()
+        typing3.joinToString() shouldBe "Dragon / Fire / Flying"
+      }
+    }
+
     describe("DualTyping") {
       it("is valid") {
         val typing = DualTyping.of(PokemanType.FIRE, PokemanType.FLYING).shouldBeRight()
