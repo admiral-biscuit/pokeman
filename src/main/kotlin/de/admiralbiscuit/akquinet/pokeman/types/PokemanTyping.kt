@@ -11,6 +11,17 @@ import arrow.core.left
 import arrow.core.right
 import de.admiralbiscuit.akquinet.pokeman.errors.InvalidPokemanTyping
 
+// A Pokeman typing is valid if and only if it consists of distinct types.
+private fun <R : PokemanTyping> validateTyping(
+  vararg type: PokemanType,
+  f: () -> R,
+): Either<InvalidPokemanTyping, R> =
+  if (type.distinct().size == type.size) {
+    f().right()
+  } else {
+    InvalidPokemanTyping.left()
+  }
+
 sealed interface PokemanTyping {
   fun joinToString(): String =
     when (this) {
@@ -29,11 +40,7 @@ data class DualTyping private constructor(val firstType: PokemanType, val second
       firstType: PokemanType,
       secondType: PokemanType,
     ): Either<InvalidPokemanTyping, DualTyping> =
-      if (firstType != secondType) {
-        DualTyping(firstType, secondType).right()
-      } else {
-        InvalidPokemanTyping.left()
-      }
+      validateTyping(firstType, secondType) { DualTyping(firstType, secondType) }
   }
 }
 
@@ -49,10 +56,8 @@ private constructor(
       secondType: PokemanType,
       thirdType: PokemanType,
     ): Either<InvalidPokemanTyping, TripleTyping> =
-      if (firstType != secondType && secondType != thirdType && thirdType != firstType) {
-        TripleTyping(firstType, secondType, thirdType).right()
-      } else {
-        InvalidPokemanTyping.left()
+      validateTyping(firstType, secondType, thirdType) {
+        TripleTyping(firstType, secondType, thirdType)
       }
   }
 }
