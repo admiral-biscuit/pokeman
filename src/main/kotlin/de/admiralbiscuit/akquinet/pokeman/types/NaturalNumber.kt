@@ -8,7 +8,7 @@ import de.admiralbiscuit.akquinet.pokeman.errors.NotANaturalNumberError
 @JvmInline
 value class NaturalNumber private constructor(val value: Int) {
   companion object {
-    fun fromInt(integer: Int): Either<NotANaturalNumberError, NaturalNumber> =
+    fun eitherFromInt(integer: Int): Either<NotANaturalNumberError, NaturalNumber> =
       if (integer > 0) {
         NaturalNumber(integer).right()
       } else {
@@ -18,4 +18,4 @@ value class NaturalNumber private constructor(val value: Int) {
 }
 
 fun Int.toNaturalNumberEither(): Either<NotANaturalNumberError, NaturalNumber> =
-  NaturalNumber.fromInt(this)
+  NaturalNumber.eitherFromInt(this)

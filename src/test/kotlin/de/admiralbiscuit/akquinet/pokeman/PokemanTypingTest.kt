@@ -1,66 +1,104 @@
 package de.admiralbiscuit.akquinet.pokeman
 
-import de.admiralbiscuit.akquinet.pokeman.errors.InvalidPokemanTyping
-import de.admiralbiscuit.akquinet.pokeman.types.DualTyping
-import de.admiralbiscuit.akquinet.pokeman.types.PokemanType
-import de.admiralbiscuit.akquinet.pokeman.types.SingleTyping
-import de.admiralbiscuit.akquinet.pokeman.types.TripleTyping
+import de.admiralbiscuit.akquinet.pokeman.errors.PokemanTypingError
+import de.admiralbiscuit.akquinet.pokeman.types.*
 import io.kotest.assertions.arrow.core.shouldBeLeft
 import io.kotest.assertions.arrow.core.shouldBeRight
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 
 class PokemanTypingTest :
   DescribeSpec({
-    describe("joinToString") {
-      it("wörks") {
-        val typing1 = SingleTyping(PokemanType.FIRE)
-        typing1.joinToString() shouldBe "Fire"
+    describe("implementation-level eitherFrom") {
+      describe("DualTyping") {
+        it("is valid") {
+          val typing = DualTyping.eitherFrom(PokemanType.FIRE, PokemanType.FLYING).shouldBeRight()
+          typing.firstType shouldBe PokemanType.FIRE
+          typing.secondType shouldBe PokemanType.FLYING
+        }
 
-        val typing2 = DualTyping.of(PokemanType.FIRE, PokemanType.FLYING).shouldBeRight()
-        typing2.joinToString() shouldBe "Fire / Flying"
+        it("is not valid") {
+          val error = DualTyping.eitherFrom(PokemanType.FIRE, PokemanType.FIRE).shouldBeLeft()
+          error shouldBe PokemanTypingError.DuplicateTypes
+        }
+      }
 
-        val typing3 =
-          TripleTyping.of(PokemanType.DRAGON, PokemanType.FIRE, PokemanType.FLYING).shouldBeRight()
-        typing3.joinToString() shouldBe "Dragon / Fire / Flying"
+      describe("TripleTyping") {
+        it("is valid") {
+          val typing =
+            TripleTyping.eitherFrom(PokemanType.DRAGON, PokemanType.FIRE, PokemanType.FLYING)
+              .shouldBeRight()
+          typing.firstType shouldBe PokemanType.DRAGON
+          typing.secondType shouldBe PokemanType.FIRE
+          typing.thirdType shouldBe PokemanType.FLYING
+        }
+
+        it("is not valid") {
+          val typings =
+            listOf(
+              TripleTyping.eitherFrom(PokemanType.DRAGON, PokemanType.DRAGON, PokemanType.FLYING),
+              TripleTyping.eitherFrom(PokemanType.DRAGON, PokemanType.FIRE, PokemanType.FIRE),
+              TripleTyping.eitherFrom(PokemanType.FLYING, PokemanType.FIRE, PokemanType.FLYING),
+              TripleTyping.eitherFrom(PokemanType.DRAGON, PokemanType.DRAGON, PokemanType.DRAGON),
+            )
+
+          typings.forEach {
+            val error = it.shouldBeLeft()
+            error shouldBe PokemanTypingError.DuplicateTypes
+          }
+        }
       }
     }
 
-    describe("DualTyping") {
-      it("is valid") {
-        val typing = DualTyping.of(PokemanType.FIRE, PokemanType.FLYING).shouldBeRight()
+    describe("interface-level eitherFrom") {
+      it("creates a SingleTyping") {
+        val typing =
+          PokemanTyping.eitherFrom(PokemanType.FIRE)
+            .shouldBeRight()
+            .shouldBeInstanceOf<SingleTyping>()
+
+        typing.type shouldBe PokemanType.FIRE
+      }
+
+      it("creates a DualTyping") {
+        val typing =
+          PokemanTyping.eitherFrom(PokemanType.FIRE, PokemanType.FLYING)
+            .shouldBeRight()
+            .shouldBeInstanceOf<DualTyping>()
+
         typing.firstType shouldBe PokemanType.FIRE
         typing.secondType shouldBe PokemanType.FLYING
       }
 
-      it("is not valid") {
-        val error = DualTyping.of(PokemanType.FIRE, PokemanType.FIRE).shouldBeLeft()
-        error shouldBe InvalidPokemanTyping
-      }
-    }
-
-    describe("TripleTyping") {
-      it("is valid") {
+      it("creates a TripleTyping") {
         val typing =
-          TripleTyping.of(PokemanType.DRAGON, PokemanType.FIRE, PokemanType.FLYING).shouldBeRight()
+          PokemanTyping.eitherFrom(PokemanType.DRAGON, PokemanType.FIRE, PokemanType.FLYING)
+            .shouldBeRight()
+            .shouldBeInstanceOf<TripleTyping>()
+
         typing.firstType shouldBe PokemanType.DRAGON
         typing.secondType shouldBe PokemanType.FIRE
         typing.thirdType shouldBe PokemanType.FLYING
       }
 
-      it("is not valid") {
-        val typings =
-          listOf(
-            TripleTyping.of(PokemanType.DRAGON, PokemanType.DRAGON, PokemanType.FLYING),
-            TripleTyping.of(PokemanType.DRAGON, PokemanType.FIRE, PokemanType.FIRE),
-            TripleTyping.of(PokemanType.FLYING, PokemanType.FIRE, PokemanType.FLYING),
-            TripleTyping.of(PokemanType.DRAGON, PokemanType.DRAGON, PokemanType.DRAGON),
-          )
+      it("fails for 0 types") {
+        val error = PokemanTyping.eitherFrom().shouldBeLeft()
 
-        typings.forEach {
-          val error = it.shouldBeLeft()
-          error shouldBe InvalidPokemanTyping
-        }
+        error shouldBe PokemanTypingError.InvalidNumberOfTypes(0)
+      }
+
+      it("fails for 4 types") {
+        val error =
+          PokemanTyping.eitherFrom(
+              PokemanType.DRAGON,
+              PokemanType.FIRE,
+              PokemanType.WATER,
+              PokemanType.FLYING,
+            )
+            .shouldBeLeft()
+
+        error shouldBe PokemanTypingError.InvalidNumberOfTypes(4)
       }
     }
   })

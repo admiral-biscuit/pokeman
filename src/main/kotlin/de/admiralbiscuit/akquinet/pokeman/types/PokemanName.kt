@@ -11,7 +11,7 @@ value class PokemanName private constructor(val value: String) {
     private val REGEX = Regex("^[a-zA-z]+\$")
     private val ALLOWED_SUFFIXES = nonEmptyListOf("chu", "mon")
 
-    fun fromString(string: String): Either<PokemanNameErrors, PokemanName> {
+    fun eitherFromString(string: String): Either<PokemanNameErrors, PokemanName> {
       val errors = mutableListOf<PokemanNameError>()
 
       if (string.isBlank()) {
@@ -41,4 +41,4 @@ value class PokemanName private constructor(val value: String) {
 }
 
 fun String.toPokemanNameEither(): Either<PokemanNameErrors, PokemanName> =
-  PokemanName.fromString(this)
+  PokemanName.eitherFromString(this)

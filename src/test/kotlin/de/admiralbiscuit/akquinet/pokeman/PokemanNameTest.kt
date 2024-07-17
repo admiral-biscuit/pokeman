@@ -15,14 +15,14 @@ class PokemanNameTest :
       it("is a valid PokemanName") {
         val input = "Piggechu"
 
-        val name = PokemanName.fromString(input).shouldBeRight()
+        val name = PokemanName.eitherFromString(input).shouldBeRight()
         name.value shouldBe "Piggechu"
       }
 
       it("uses a capitalised string") {
         val input = "pIgGeChU"
 
-        val name = PokemanName.fromString(input).shouldBeRight()
+        val name = PokemanName.eitherFromString(input).shouldBeRight()
         name.value shouldBe "Piggechu"
       }
     }
@@ -31,28 +31,28 @@ class PokemanNameTest :
       it("does not match regex") {
         val input = "P1993chu"
 
-        val error = PokemanName.fromString(input).shouldBeLeft().single()
+        val error = PokemanName.eitherFromString(input).shouldBeLeft().single()
         error.shouldBeInstanceOf<PokemanNameError.InvalidRegex>()
       }
 
       it("is too long") {
         val input = "PiggechuPiggechuPiggechu"
 
-        val error = PokemanName.fromString(input).shouldBeLeft().single()
+        val error = PokemanName.eitherFromString(input).shouldBeLeft().single()
         error.shouldBeInstanceOf<PokemanNameError.TooLong>()
       }
 
       it("does not end with allowed suffix") {
         val input = "Squirtle"
 
-        val error = PokemanName.fromString(input).shouldBeLeft().single()
+        val error = PokemanName.eitherFromString(input).shouldBeLeft().single()
         error.shouldBeInstanceOf<PokemanNameError.InvalidSuffix>()
       }
 
       it("has multiple issues") {
         val input = "PiggechuPiggechuPiggechu2"
 
-        val errors = PokemanName.fromString(input).shouldBeLeft().shouldHaveSize(3)
+        val errors = PokemanName.eitherFromString(input).shouldBeLeft().shouldHaveSize(3)
         errors[0].shouldBeInstanceOf<PokemanNameError.InvalidRegex>()
         errors[1].shouldBeInstanceOf<PokemanNameError.TooLong>()
         errors[2].shouldBeInstanceOf<PokemanNameError.InvalidSuffix>()
@@ -61,7 +61,7 @@ class PokemanNameTest :
       it("is blank") {
         val input = "   "
 
-        val errors = PokemanName.fromString(input).shouldBeLeft().shouldHaveSize(3)
+        val errors = PokemanName.eitherFromString(input).shouldBeLeft().shouldHaveSize(3)
         errors[0].shouldBeInstanceOf<PokemanNameError.Blank>()
         errors[1].shouldBeInstanceOf<PokemanNameError.InvalidRegex>()
         errors[2].shouldBeInstanceOf<PokemanNameError.InvalidSuffix>()

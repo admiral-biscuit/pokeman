@@ -8,10 +8,10 @@ import de.admiralbiscuit.akquinet.pokeman.types.NaturalNumber
 
 class NaturalNumberTest :
   DescribeSpec({
-    it("is valid") { NaturalNumber.fromInt(9).shouldBeRight() }
+    it("is valid") { NaturalNumber.eitherFromInt(9).shouldBeRight() }
 
     it("is not valid") {
-      NaturalNumber.fromInt(0) shouldBeLeft NotANaturalNumberError(0)
-      NaturalNumber.fromInt(-9) shouldBeLeft NotANaturalNumberError(-9)
+      NaturalNumber.eitherFromInt(0) shouldBeLeft NotANaturalNumberError(0)
+      NaturalNumber.eitherFromInt(-9) shouldBeLeft NotANaturalNumberError(-9)
     }
   })
